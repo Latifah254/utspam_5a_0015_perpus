@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:utspam_a_0015_perpus/models/book.dart';
-import 'package:utspam_a_0015_perpus/models/transaction.dart';
-import 'package:utspam_a_0015_perpus/models/user.dart';
-import 'package:utspam_a_0015_perpus/controller/perpus_controller.dart';
-import 'history.dart';
+import 'package:utspam_5a_0015_perpus/models/book.dart';
+import 'package:utspam_5a_0015_perpus/models/transaction.dart';
+import 'package:utspam_5a_0015_perpus/models/user.dart';
+import 'package:utspam_5a_0015_perpus/controller/perpus_controller.dart';
+import 'home.dart';
 
 class BorrowFormScreen extends StatefulWidget {
   final Book book;
@@ -20,7 +20,7 @@ class BorrowFormScreen extends StatefulWidget {
 class _BorrowFormScreenState extends State<BorrowFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _lamaPinjamController = TextEditingController();
-  
+
   DateTime _tanggalMulai = DateTime.now();
   double _totalBiaya = 0;
   User? _currentUser;
@@ -97,12 +97,13 @@ class _BorrowFormScreenState extends State<BorrowFormScreen> {
           ),
         );
 
-        // Navigasi ke halaman riwayat dengan pushReplacement
-        Navigator.pushReplacement(
+        // Navigasi kembali ke home dengan tab riwayat (index 1)
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const HistoryScreen(),
+            builder: (context) => const HomeScreen(initialTabIndex: 1),
           ),
+          (route) => false,
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -119,189 +120,181 @@ class _BorrowFormScreenState extends State<BorrowFormScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        backgroundColor: Color(0xFFF5F5F5),
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFF800020)),
+        ),
       );
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Form Peminjaman'),
-        backgroundColor: Colors.blue,
+        title: const Text(
+          'Form Peminjaman',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF800020),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Detail Buku
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          widget.book.coverUrl,
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      widget.book.coverUrl,
+                      width: 80,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
                           width: 80,
                           height: 120,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 80,
-                              height: 120,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.book),
-                            );
-                          },
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.book),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.book.judul,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2C2C2C),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.book.judul,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              widget.book.genre,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Rp ${widget.book.hargaPinjam.toStringAsFixed(0)}/hari',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                        const SizedBox(height: 6),
+                        Text(
+                          widget.book.genre,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 6),
+                        Text(
+                          'Rp ${widget.book.hargaPinjam.toStringAsFixed(0)}/hari',
+                          style: const TextStyle(
+                            color: Color(0xFF800020),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 24),
-
-              // Nama Peminjam (readonly)
-              TextFormField(
-                initialValue: _currentUser?.namaLengkap ?? '',
-                decoration: const InputDecoration(
-                  labelText: 'Nama Peminjam',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
-                ),
-                enabled: false,
-              ),
-              const SizedBox(height: 16),
-
-              // Lama Pinjam
-              TextFormField(
-                controller: _lamaPinjamController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Lama Pinjam (hari)',
-                  prefixIcon: Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(),
-                  hintText: 'Masukkan jumlah hari',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Lama pinjam wajib diisi';
-                  }
-                  int? days = int.tryParse(value);
-                  if (days == null || days <= 0) {
-                    return 'Lama pinjam harus berupa angka positif';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Tanggal Mulai
-              InkWell(
-                onTap: _selectDate,
-                child: InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'Tanggal Mulai Pinjam',
-                    prefixIcon: Icon(Icons.event),
-                    border: OutlineInputBorder(),
-                  ),
-                  child: Text(
-                    DateFormat('dd MMMM yyyy').format(_tanggalMulai),
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Total Biaya
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Total Biaya:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    TextFormField(
+                      initialValue: _currentUser?.namaLengkap ?? '',
+                      decoration: const InputDecoration(
+                        labelText: 'Nama Peminjam',
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
+                      ),
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _lamaPinjamController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Lama Pinjam (hari)',
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Lama pinjam wajib diisi';
+                        }
+                        int? days = int.tryParse(value);
+                        if (days == null || days <= 0) {
+                          return 'Lama pinjam harus berupa angka positif';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    InkWell(
+                      onTap: _selectDate,
+                      child: InputDecorator(
+                        decoration: const InputDecoration(
+                          labelText: 'Tanggal Mulai',
+                          labelStyle: TextStyle(color: Colors.grey),
+                          floatingLabelStyle: TextStyle(
+                            color: Color(0xFF800020),
+                          ),
+                        ),
+                        child: Text(
+                          DateFormat('dd MMMM yyyy').format(_tanggalMulai),
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
-                    Text(
-                      'Rp ${_totalBiaya.toStringAsFixed(0)}',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                    const SizedBox(height: 32),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF800020).withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Total Biaya',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF2C2C2C),
+                            ),
+                          ),
+                          Text(
+                            'Rp ${_totalBiaya.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF800020),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _submitForm,
+                        child: const Text(
+                          'KONFIRMASI',
+                          style: TextStyle(letterSpacing: 1),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Tombol Submit
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'KONFIRMASI PEMINJAMAN',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
