@@ -44,43 +44,48 @@ class Book {
     return [
       Book(
         id: '1',
-        judul: 'Laskar Pelangi',
-        genre: 'Novel',
+        judul: 'Kalkulus dan Geometri Analitik',
+        genre: 'Matematika',
         hargaPinjam: 5000,
-        coverUrl: 'https://images.tokopedia.net/img/cache/700/product-1/2020/8/25/8452952/8452952_8d0f6f5d-c5a1-4a6e-8e3c-9c3e7f5f5e5f_700_700.jpg',
-        sinopsis: 'Kisah inspiratif 10 anak dari keluarga miskin di Belitung yang berjuang meraih mimpi.',
+        coverUrl: 'lib/assets/Kalkulus dan Geometri Analitik.jpg',
+        sinopsis:
+            'Buku teks komprehensif tentang kalkulus diferensial, integral, dan geometri analitik.',
       ),
       Book(
         id: '2',
-        judul: 'Bumi Manusia',
-        genre: 'Sejarah',
+        judul: 'Aljabar Linear Elementer',
+        genre: 'Matematika',
         hargaPinjam: 7000,
-        coverUrl: 'https://upload.wikimedia.org/wikipedia/id/3/3f/Bumi_Manusia.jpg',
-        sinopsis: 'Novel karya Pramoedya Ananta Toer yang menceritakan perjalanan Minke.',
+        coverUrl: 'lib/assets/Aljabar Linear Elementer.png',
+        sinopsis:
+            'Pengantar aljabar linear mencakup matriks, vektor, dan transformasi linear.',
       ),
       Book(
         id: '3',
-        judul: 'Harry Potter',
-        genre: 'Fantasy',
+        judul: 'Matematika Diskrit',
+        genre: 'Matematika',
         hargaPinjam: 10000,
-        coverUrl: 'https://m.media-amazon.com/images/I/81YOuOGFCJL.jpg',
-        sinopsis: 'Petualangan seorang penyihir muda di Hogwarts School of Witchcraft.',
+        coverUrl: 'lib/assets/Matematika Diskrit.jpg',
+        sinopsis:
+            'Pembahasan lengkap tentang logika, himpunan, graf, dan teori bilangan.',
       ),
       Book(
         id: '4',
-        judul: 'Atomic Habits',
-        genre: 'Self-Help',
+        judul: 'Statistika dan Probabilitas',
+        genre: 'Matematika',
         hargaPinjam: 8000,
-        coverUrl: 'https://m.media-amazon.com/images/I/51Tlm0GZTXL.jpg',
-        sinopsis: 'Panduan praktis membangun kebiasaan baik dan menghilangkan kebiasaan buruk.',
+        coverUrl: 'lib/assets/Statistika dan Probabilitas.jpg',
+        sinopsis:
+            'Panduan praktis memahami konsep statistika deskriptif dan inferensial.',
       ),
       Book(
         id: '5',
-        judul: 'Sapiens',
-        genre: 'Non-Fiksi',
+        judul: 'Persamaan Diferensial',
+        genre: 'Matematika',
         hargaPinjam: 9000,
-        coverUrl: 'https://m.media-amazon.com/images/I/713jIoMO3UL.jpg',
-        sinopsis: 'Sejarah singkat umat manusia dari zaman batu hingga era modern.',
+        coverUrl: 'lib/assets/Persamaan Diferensial.jpg',
+        sinopsis:
+            'Metode penyelesaian persamaan diferensial biasa dan parsial.',
       ),
     ];
   }
