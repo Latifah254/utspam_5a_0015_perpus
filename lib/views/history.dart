@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:utspam_a_0015_perpus/models/transaction.dart';
-import 'package:utspam_a_0015_perpus/controller/perpus_controller.dart';
+import 'package:utspam_5a_0015_perpus/models/transaction.dart';
+import 'package:utspam_5a_0015_perpus/controller/perpus_controller.dart';
 import 'detail.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -24,7 +24,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> _loadTransactions() async {
-    List<Transaction> transactions = await PerpusController.getAllTransactions();
+    List<Transaction> transactions =
+        await PerpusController.getAllTransactions();
     setState(() {
       _transactions = transactions.reversed.toList(); // Terbaru di atas
       _isLoading = false;
@@ -39,55 +40,54 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Riwayat Peminjaman'),
-        backgroundColor: Colors.blue,
+        title: const Text('Riwayat', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF800020),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF800020)),
+            )
           : _transactions.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.history,
-                        size: 100,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Belum ada riwayat peminjaman',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.history_outlined,
+                    size: 80,
+                    color: Colors.grey[400],
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _transactions.length,
-                  itemBuilder: (context, index) {
-                    return TransactionCard(
-                      transaction: _transactions[index],
-                      onTap: () async {
-                        // Push dengan Navigator.push agar bisa kembali
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                              transaction: _transactions[index],
-                            ),
-                          ),
-                        );
-                        // Refresh data setelah kembali
-                        _refreshData();
-                      },
+                  const SizedBox(height: 16),
+                  Text(
+                    'Belum ada riwayat',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _transactions.length,
+              itemBuilder: (context, index) {
+                return TransactionCard(
+                  transaction: _transactions[index],
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailScreen(transaction: _transactions[index]),
+                      ),
                     );
+                    _refreshData();
                   },
-                ),
+                );
+              },
+            ),
     );
   }
 }
@@ -105,11 +105,11 @@ class TransactionCard extends StatelessWidget {
   Color _getStatusColor() {
     switch (transaction.status) {
       case StatusPeminjaman.aktif:
-        return Colors.green;
+        return const Color(0xFF2E7D32);
       case StatusPeminjaman.selesai:
-        return Colors.blue;
+        return const Color(0xFF1976D2);
       case StatusPeminjaman.dibatalkan:
-        return Colors.red;
+        return const Color(0xFFC62828);
     }
   }
 
@@ -126,10 +126,10 @@ class TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
@@ -139,27 +139,24 @@ class TransactionCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Cover Buku
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
+                child: Image.asset(
                   transaction.book.coverUrl,
                   width: 60,
-                  height: 90,
+                  height: 85,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       width: 60,
-                      height: 90,
+                      height: 85,
                       color: Colors.grey[300],
-                      child: const Icon(Icons.book),
+                      child: const Icon(Icons.book, size: 30),
                     );
                   },
                 ),
               ),
               const SizedBox(width: 16),
-
-              // Info Transaksi
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,46 +164,38 @@ class TransactionCard extends StatelessWidget {
                     Text(
                       transaction.book.judul,
                       style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF2C2C2C),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
-                      transaction.namaPeminjam,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      DateFormat('dd MMM yyyy').format(transaction.tanggalMulai),
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                      ),
+                      DateFormat(
+                        'dd MMM yyyy',
+                      ).format(transaction.tanggalMulai),
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
+                            horizontal: 10,
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: _getStatusColor().withOpacity(0.2),
+                            color: _getStatusColor().withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             _getStatusText(),
                             style: TextStyle(
                               color: _getStatusColor(),
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -214,9 +203,9 @@ class TransactionCard extends StatelessWidget {
                         Text(
                           'Rp ${transaction.totalBiaya.toStringAsFixed(0)}',
                           style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF800020),
                           ),
                         ),
                       ],
@@ -225,7 +214,7 @@ class TransactionCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right, color: Colors.grey),
+              Icon(Icons.chevron_right_rounded, color: Colors.grey[400]),
             ],
           ),
         ),
