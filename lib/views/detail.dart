@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:utspam_a_0015_perpus/models/transaction.dart';
-import 'package:utspam_a_0015_perpus/controller/perpus_controller.dart';
+import 'package:utspam_5a_0015_perpus/models/transaction.dart';
+import 'package:utspam_5a_0015_perpus/controller/perpus_controller.dart';
 import 'edit.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -27,11 +27,11 @@ class _DetailScreenState extends State<DetailScreen> {
   Color _getStatusColor() {
     switch (_transaction.status) {
       case StatusPeminjaman.aktif:
-        return Colors.green;
+        return const Color(0xFF2E7D32);
       case StatusPeminjaman.selesai:
-        return Colors.blue;
+        return const Color(0xFF1976D2);
       case StatusPeminjaman.dibatalkan:
-        return Colors.red;
+        return const Color(0xFFC62828);
     }
   }
 
@@ -51,7 +51,9 @@ class _DetailScreenState extends State<DetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Konfirmasi Pembatalan'),
-        content: const Text('Apakah Anda yakin ingin membatalkan peminjaman ini?'),
+        content: const Text(
+          'Apakah Anda yakin ingin membatalkan peminjaman ini?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -60,11 +62,13 @@ class _DetailScreenState extends State<DetailScreen> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              
+
               // Update status
               _transaction.status = StatusPeminjaman.dibatalkan;
-              bool success = await PerpusController.updateTransaction(_transaction);
-              
+              bool success = await PerpusController.updateTransaction(
+                _transaction,
+              );
+
               if (success) {
                 setState(() {});
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -76,7 +80,10 @@ class _DetailScreenState extends State<DetailScreen> {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Ya, Batalkan', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Ya, Batalkan',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -102,89 +109,104 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Detail Peminjaman'),
-        backgroundColor: Colors.blue,
+        title: const Text(
+          'Detail Peminjaman',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF800020),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover Buku
             Container(
               width: double.infinity,
-              height: 300,
+              height: 250,
               color: Colors.grey[200],
-              child: Image.network(
+              child: Image.asset(
                 _transaction.book.coverUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return const Center(
-                    child: Icon(Icons.book, size: 100, color: Colors.grey),
+                    child: Icon(Icons.book, size: 80, color: Colors.grey),
                   );
                 },
               ),
             ),
-
-            Padding(
+            Container(
+              width: double.infinity,
+              color: Colors.white,
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Status Badge
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: 12,
+                      vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor().withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
+                      color: _getStatusColor().withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       _getStatusText(),
                       style: TextStyle(
                         color: _getStatusColor(),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-
-                  // Judul Buku
+                  const SizedBox(height: 16),
                   Text(
                     _transaction.book.judul,
                     style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF2C2C2C),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Text(
                     _transaction.book.genre,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 15, color: Colors.grey[600]),
                   ),
-                  const SizedBox(height: 24),
-
-                  // Detail Info Cards
-                  _buildInfoCard('Nama Peminjam', _transaction.namaPeminjam, Icons.person),
-                  const SizedBox(height: 12),
+                ],
+              ),
+            ),
+            const SizedBox(height: 2),
+            Container(
+              width: double.infinity,
+              color: Colors.white,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInfoCard(
+                    'Nama Peminjam',
+                    _transaction.namaPeminjam,
+                    Icons.person_outline,
+                  ),
+                  const SizedBox(height: 10),
                   _buildInfoCard(
                     'Lama Pinjam',
                     '${_transaction.lamaPinjam} hari',
-                    Icons.calendar_today,
+                    Icons.calendar_today_outlined,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildInfoCard(
                     'Tanggal Mulai',
-                    DateFormat('dd MMMM yyyy').format(_transaction.tanggalMulai),
-                    Icons.event,
+                    DateFormat(
+                      'dd MMMM yyyy',
+                    ).format(_transaction.tanggalMulai),
+                    Icons.event_outlined,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildInfoCard(
                     'Tanggal Selesai',
                     DateFormat('dd MMMM yyyy').format(
@@ -192,18 +214,15 @@ class _DetailScreenState extends State<DetailScreen> {
                         Duration(days: _transaction.lamaPinjam),
                       ),
                     ),
-                    Icons.event_available,
+                    Icons.event_available_outlined,
                   ),
-                  const SizedBox(height: 24),
-
-                  // Total Biaya
+                  const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: Colors.green[50],
+                      color: const Color(0xFF800020).withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,61 +230,50 @@ class _DetailScreenState extends State<DetailScreen> {
                         const Text(
                           'Total Biaya',
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Color(0xFF2C2C2C),
                           ),
                         ),
                         Text(
                           'Rp ${_transaction.totalBiaya.toStringAsFixed(0)}',
                           style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF800020),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
-
-                  // Tombol Aksi
+                  const SizedBox(height: 24),
                   if (_transaction.status == StatusPeminjaman.aktif) ...[
-                    // Tombol Edit
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
+                      child: ElevatedButton(
                         onPressed: _navigateToEdit,
-                        icon: const Icon(Icons.edit, color: Colors.white),
-                        label: const Text(
-                          'Edit Peminjaman',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                        child: const Text(
+                          'EDIT PEMINJAMAN',
+                          style: TextStyle(letterSpacing: 1),
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
-                    
-                    // Tombol Batalkan
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
-                      child: OutlinedButton.icon(
+                      child: OutlinedButton(
                         onPressed: _cancelTransaction,
-                        icon: const Icon(Icons.cancel, color: Colors.red),
-                        label: const Text(
-                          'Batalkan Peminjaman',
-                          style: TextStyle(fontSize: 16, color: Colors.red),
-                        ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.red),
+                          side: const BorderSide(color: Color(0xFFC62828)),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'BATALKAN',
+                          style: TextStyle(
+                            color: Color(0xFFC62828),
+                            letterSpacing: 1,
                           ),
                         ),
                       ),
@@ -282,31 +290,29 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget _buildInfoCard(String label, String value, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blue),
-          const SizedBox(width: 16),
+          Icon(icon, color: const Color(0xFF800020), size: 20),
+          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2C2C2C),
                 ),
               ),
             ],
