@@ -1,8 +1,8 @@
 // lib/screens/register_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:utspam_a_0015_perpus/controller/perpus_controller.dart';
-import 'package:utspam_a_0015_perpus/models/user.dart';
+import 'package:utspam_5a_0015_perpus/controller/perpus_controller.dart';
+import 'package:utspam_5a_0015_perpus/models/user.dart';
 import 'login.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final _namaController = TextEditingController();
   final _nikController = TextEditingController();
   final _emailController = TextEditingController();
@@ -22,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _telpController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   @override
@@ -108,7 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        
+
         // Pindah ke halaman login
         Navigator.pushReplacement(
           context,
@@ -117,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Email atau Username sudah digunakan!'),
+            content: Text('Email, Username, atau NIK sudah digunakan!'),
             backgroundColor: Colors.red,
           ),
         );
@@ -128,164 +128,126 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('REGISTRASI PENGGUNA',
-          style: const TextStyle(
-            color: Colors.white,
-             fontSize: 16,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
+        title: const Text('Daftar Akun', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF800020),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF800020)),
+            )
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 20),
-                    const Icon(
-                      Icons.person_add,
-                      size: 80,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Buat Akun Baru',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 30),
-                    
-                    // Nama Lengkap
+                    const SizedBox(height: 8),
+
                     TextFormField(
                       controller: _namaController,
                       decoration: const InputDecoration(
                         labelText: 'Nama Lengkap',
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
-                      validator: (value) => _validateRequired(value, 'Nama lengkap'),
+                      validator: (value) =>
+                          _validateRequired(value, 'Nama lengkap'),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // NIK
                     TextFormField(
                       controller: _nikController,
                       decoration: const InputDecoration(
                         labelText: 'NIK',
-                        prefixIcon: Icon(Icons.badge),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
                       validator: (value) => _validateRequired(value, 'NIK'),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Email
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
                       validator: _validateEmail,
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Alamat
                     TextFormField(
                       controller: _alamatController,
                       maxLines: 3,
                       decoration: const InputDecoration(
                         labelText: 'Alamat',
-                        prefixIcon: Icon(Icons.home),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
+                        alignLabelWithHint: true,
                       ),
                       validator: (value) => _validateRequired(value, 'Alamat'),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Nomor Telepon
                     TextFormField(
                       controller: _telpController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         labelText: 'Nomor Telepon',
-                        prefixIcon: Icon(Icons.phone),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
                       validator: _validatePhone,
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Username
                     TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
                         labelText: 'Username',
-                        prefixIcon: Icon(Icons.account_circle),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
-                      validator: (value) => _validateRequired(value, 'Username'),
+                      validator: (value) =>
+                          _validateRequired(value, 'Username'),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Color(0xFF800020)),
                       ),
                       validator: _validatePassword,
                     ),
-                    const SizedBox(height: 30),
-                    
-                    // Tombol Register
+                    const SizedBox(height: 32),
                     ElevatedButton(
                       onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
                       child: const Text(
                         'DAFTAR',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(letterSpacing: 1),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // Link ke Login
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Sudah punya akun? '),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text('Login di sini'),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Sudah punya akun? Login',
+                          style: TextStyle(color: Color(0xFF800020)),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
